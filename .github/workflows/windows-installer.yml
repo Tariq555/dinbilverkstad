@@ -41,7 +41,7 @@ jobs:
         shell: cmd
         run: |
           cd electron
-          npm ci
+          npm install
           npm run build:win
 
       - name: Upload installer
