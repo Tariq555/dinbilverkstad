@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>{{ 'Redigera däck' if tyre else 'Lägg till däck' }}</h1>
+  <p class="muted">Fyll i grundinfo, plats och antal. Du kan alltid uppdatera senare.</p>
+</section>
+
+<section class="card">
+  <form method="post" class="form">
+    <div class="row">
+      <label>Märke</label>
+      <input type="text" name="brand" required value="{{ tyre.brand if tyre else '' }}">
+    </div>
+    <div class="row">
+      <label>Modell</label>
+      <input type="text" name="model" required value="{{ tyre.model if tyre else '' }}">
+    </div>
+    <div class="row">
+      <label>Storlek</label>
+      <input type="text" name="size" required placeholder="t.ex. 205/55 R16" value="{{ tyre.size if tyre else '' }}">
+    </div>
+    <div class="row">
+      <label>Säsong</label>
+      <select name="season" required>
+        {% set s = tyre.season if tyre else '' %}
+        <option value="">Välj</option>
+        <option value="sommar" {% if s=='sommar' %}selected{% endif %}>Sommar</option>
+        <option value="vinter" {% if s=='vinter' %}selected{% endif %}>Vinter</option>
+        <option value="året runt" {% if s=='året runt' %}selected{% endif %}>Året runt</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>Dubbat</label>
+      <input type="checkbox" name="studded" {% if tyre and tyre.studded %}checked{% endif %}>
+    </div>
+    <div class="row">
+      <label>Antal</label>
+      <input type="number" name="quantity" min="0" required value="{{ tyre.quantity if tyre else 0 }}">
+    </div>
+    <div class="row">
+      <label>Pris/st</label>
+      <input type="number" step="0.01" name="price" min="0" value="{{ tyre.price if tyre else 0 }}">
+    </div>
+    <div class="row">
+      <label>Anteckningar</label>
+      <textarea name="notes">{{ tyre.notes if tyre else '' }}</textarea>
+    </div>
+    <div class="actions">
+      <button type="submit">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12.5 10 17l9-10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        </svg>
+        {{ 'Uppdatera' if tyre else 'Spara' }}
+      </button>
+      <a class="btn secondary" href="{{ url_for('tyres') }}">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18 9 12l6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+        </svg>
+        Tillbaka
+      </a>
+    </div>
+  </form>
+</section>
+{% endblock %}

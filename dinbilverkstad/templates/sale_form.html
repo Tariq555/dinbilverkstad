@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Sälj däck</h1>
+  <p class="muted">{{ tyre.brand }} {{ tyre.model }} {{ tyre.size }} · I lager: {{ tyre.quantity }} st</p>
+</section>
+
+<section class="card">
+  <form method="post" class="form">
+    <div class="row">
+      <label>Antal</label>
+      <input type="number" name="quantity" min="1" max="{{ tyre.quantity }}" required>
+    </div>
+    <div class="row">
+      <label>Pris/st</label>
+      <input type="number" name="price_per" step="0.01" min="0" value="{{ tyre.price }}">
+    </div>
+    <div class="actions">
+      <button type="submit">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 7h15l-2 10H8L6 7Z" stroke="white" stroke-width="2" opacity="0.9"/>
+          <path d="M6 7 4.5 4H2" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+        </svg>
+        Registrera försäljning
+      </button>
+      <a class="btn secondary" href="{{ url_for('tyres') }}">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18 9 12l6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+        </svg>
+        Tillbaka
+      </a>
+    </div>
+  </form>
+</section>
+{% endblock %}

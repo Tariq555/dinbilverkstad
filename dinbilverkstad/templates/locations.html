@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Platser</h1>
+  <p class="muted">Skapa lagerplatser som hyllor, sektioner eller rad/kolumn.</p>
+</section>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-title">Platser</div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Namn</th><th>Åtgärder</th></tr></thead>
+        <tbody>
+          {% for loc in locations %}
+          <tr>
+            <td>{{ loc.name }}</td>
+            <td>
+              <form method="post" action="{{ url_for('location_delete', location_id=loc.id) }}" onsubmit="return confirm('Radera plats?')">
+                <button class="btn danger" type="submit">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 7h16M10 11v7M14 11v7" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+                    <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+                    <path d="M6 7l1 14h10l1-14" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+                  </svg>
+                  Radera
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="2">Inga platser</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Lägg till ny plats</div>
+    <form method="post" class="form">
+      <div class="row">
+        <label>Namn</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="actions">
+        <button type="submit">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12.5 10 17l9-10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+          </svg>
+          Spara
+        </button>
+        <a class="btn secondary" href="{{ url_for('tyres') }}">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18 9 12l6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+          </svg>
+          Tillbaka
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

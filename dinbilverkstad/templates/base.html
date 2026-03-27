@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Din Bilverkstad</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <img class="brand-logo-img" src="{{ url_for('static', filename='dinbilverkstad-logo.png') }}" alt="Din Bilverkstad" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'">
+          <svg class="icon brand-logo-fallback" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" stroke="white" stroke-width="2" opacity="0.95"/>
+            <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" stroke="white" stroke-width="2" opacity="0.95"/>
+            <path d="M12 2v6M12 16v6M2 12h6M16 12h6" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+            <path d="M6.2 6.2l4.2 4.2M13.6 13.6l4.2 4.2M17.8 6.2l-4.2 4.2M10.4 13.6l-4.2 4.2" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="logo">DIN BILVERKSTAD</div>
+          <div class="tagline">Däcklager & Försäljning</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <form class="header-search" action="{{ url_for('tyres') }}" method="get" role="search">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="white" stroke-width="2" opacity="0.8"/>
+            <path d="M21 21l-4.35-4.35" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+          </svg>
+          <input name="q" placeholder="Sök däck..." value="{{ request.args.get('q','') }}">
+        </form>
+
+        <nav>
+          <a class="navlink" href="{{ url_for('index') }}">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-8.5Z" stroke="white" stroke-width="2" stroke-linejoin="round" opacity="0.85"/>
+            </svg>
+            Översikt
+          </a>
+          <a class="navlink" href="{{ url_for('tyres') }}">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" stroke="white" stroke-width="2" opacity="0.85"/>
+              <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" stroke="white" stroke-width="2" opacity="0.75"/>
+            </svg>
+            Däck
+          </a>
+          <a class="navlink" href="{{ url_for('tyre_new') }}">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+            </svg>
+            Lägg till
+          </a>
+          <a class="navlink" href="{{ url_for('index') }}#sales">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 7h15l-2 10H8L6 7Z" stroke="white" stroke-width="2" opacity="0.85"/>
+              <path d="M6 7 4.5 4H2" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+            </svg>
+            Försäljning
+          </a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash">
+          {% for category, message in messages %}
+            <div class="flash-item {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    <div class="fade-up">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <script>
+    const debounce = (fn, ms = 300) => {
+      let t;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), ms);
+      };
+    };
+
+    document.querySelectorAll("form[data-auto-submit='true']").forEach((form) => {
+      const submitSoon = debounce(() => form.requestSubmit?.() ?? form.submit(), 260);
+      form.querySelectorAll("input, select").forEach((el) => {
+        el.addEventListener("input", submitSoon);
+        el.addEventListener("change", submitSoon);
+      });
+    });
+  </script>
+</body>
+</html>

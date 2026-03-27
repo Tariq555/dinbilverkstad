@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Däck</h1>
+  <p>Snabb sökning, filter och försäljning. Allt sparas lokalt.</p>
+</section>
+
+<form method="get" class="filter" data-auto-submit="true">
+  <div class="control" title="Sök">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="white" stroke-width="2" opacity="0.8"/>
+      <path d="M21 21l-4.35-4.35" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+    </svg>
+    <input type="text" name="q" placeholder="Sök märke, modell, storlek..." value="{{ q }}" autocomplete="off">
+  </div>
+
+  <div class="control" title="Säsong">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2v20M4 12h16" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+      <path d="M17 7c-1.4-1.7-3-2.5-5-2.5S8.4 5.3 7 7c-1 1.2-1 2.9 0 4.1.9 1.1 2.3 1.7 5 1.9 2.7.2 4.1.8 5 1.9 1 1.2 1 2.9 0 4.1-1.4 1.7-3 2.5-5 2.5s-3.6-.8-5-2.5" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+    </svg>
+    <select name="season" aria-label="Säsong">
+      <option value="">Säsong</option>
+      <option value="sommar" {% if season=='sommar' %}selected{% endif %}>Sommar</option>
+      <option value="vinter" {% if season=='vinter' %}selected{% endif %}>Vinter</option>
+      <option value="året runt" {% if season=='året runt' %}selected{% endif %}>Året runt</option>
+    </select>
+  </div>
+
+  <a class="btn" href="{{ url_for('tyre_new') }}">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+    </svg>
+    Lägg till
+  </a>
+  <a class="btn secondary" href="{{ url_for('tyres') }}">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+      <path d="M20 4v6h-6" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+    </svg>
+    Rensa
+  </a>
+  <a class="btn ghost" href="#" onclick="window.print(); return false;">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M7 8V3h10v5M7 17h10v4H7v-4Z" stroke="white" stroke-width="2" opacity="0.8"/>
+      <path d="M6 14H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1" stroke="white" stroke-width="2" opacity="0.8"/>
+    </svg>
+    Skriv ut
+  </a>
+
+  <span class="badge">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 7h16M4 12h16M4 17h16" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+    </svg>
+    {{ tyres|length }} rader
+  </span>
+  <span class="badge">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" stroke="white" stroke-width="2" opacity="0.7"/>
+      <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" stroke="white" stroke-width="2" opacity="0.6"/>
+    </svg>
+    {{ tyres|map(attribute='quantity')|sum }} st
+  </span>
+</form>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Märke</th>
+        <th>Modell</th>
+        <th>Storlek</th>
+        <th>Säsong</th>
+        <th>Dubbat</th>
+        <th>Pris</th>
+        <th>Antal</th>
+        <th>Åtgärder</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in tyres %}
+      <tr>
+        <td>{{ t.brand }}</td>
+        <td>{{ t.model }}</td>
+        <td>{{ t.size }}</td>
+        <td>{{ t.season }}</td>
+        <td>{{ 'Ja' if t.studded else 'Nej' }}</td>
+        <td>{{ "%.2f"|format(t.price) }}</td>
+        <td>
+          {% if t.quantity >= 4 %}
+            <span class="badge ok">{{ t.quantity }} st</span>
+          {% elif t.quantity > 0 %}
+            <span class="badge low">{{ t.quantity }} st</span>
+          {% else %}
+            <span class="badge danger">0 st</span>
+          {% endif %}
+        </td>
+        <td>
+          <a class="btn secondary" href="{{ url_for('tyre_edit', tyre_id=t.id) }}">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 20h4l10.5-10.5a2 2 0 0 0 0-3L16.5 4a2 2 0 0 0-3 0L3 14.5V20Z" stroke="white" stroke-width="2" opacity="0.85"/>
+              <path d="M13.5 6.5 17.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+            </svg>
+            Redigera
+          </a>
+          {% if t.quantity > 0 %}
+          <a class="btn" href="{{ url_for('tyre_sell', tyre_id=t.id) }}">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 7h15l-2 10H8L6 7Z" stroke="white" stroke-width="2" opacity="0.85"/>
+              <path d="M6 7 4.5 4H2" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+              <path d="M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" stroke="white" stroke-width="2" opacity="0.75"/>
+            </svg>
+            Sälj
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8">Inga däck funna</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

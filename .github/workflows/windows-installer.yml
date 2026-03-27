@@ -1,0 +1,44 @@
+name: Build Windows Installer (x64)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12 (x64)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: "x64"
+
+      - name: Build backend (PyInstaller)
+        shell: cmd
+        run: |
+          cd dinbilverkstad
+          build_windows_exe.bat
+
+      - name: Setup Node.js (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Build desktop installer (Electron/NSIS x64)
+        shell: cmd
+        run: |
+          cd electron
+          npm ci
+          npm run build:win
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: DinBilverkstad-Installer-x64
+          path: |
+            electron\dist\*.exe
