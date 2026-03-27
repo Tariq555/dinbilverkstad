@@ -44,9 +44,16 @@ jobs:
           npm install
           npm run build:win
 
+      - name: List build output
+        shell: cmd
+        run: |
+          dir electron\dist
+          dir electron\dist\*.exe
+
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
           name: DinBilverkstad-Installer-x64
           path: |
-            electron\dist\*.exe
+            electron/dist/**
+          if-no-files-found: error
