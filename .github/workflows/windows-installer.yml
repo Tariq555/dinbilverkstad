@@ -27,7 +27,7 @@ jobs:
           .\venv_ci\Scripts\python.exe -m pip install --upgrade pip setuptools wheel
           .\venv_ci\Scripts\python.exe -m pip install -r requirements.txt
           .\venv_ci\Scripts\python.exe -m pip install pyinstaller
-          .\venv_ci\Scripts\python.exe -m pyinstaller --noconfirm --clean --onefile --name DinBilverkstad --add-data "templates;templates" --add-data "static;static" app.py
+          .\venv_ci\Scripts\python.exe -m PyInstaller --noconfirm --clean --onefile --name DinBilverkstad --add-data "templates;templates" --add-data "static;static" app.py
           New-Item -ItemType Directory -Force -Path .\release\DinBilverkstad\data | Out-Null
           Copy-Item -Force .\dist\DinBilverkstad.exe .\release\DinBilverkstad\DinBilverkstad.exe
           if (Test-Path .\install_windows.bat) { Copy-Item -Force .\install_windows.bat .\release\DinBilverkstad\Install_DinBilverkstad.bat }
