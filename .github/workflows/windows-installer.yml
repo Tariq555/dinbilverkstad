@@ -19,10 +19,18 @@ jobs:
           architecture: "x64"
 
       - name: Build backend (PyInstaller)
-        shell: cmd
+        working-directory: dinbilverkstad
+        shell: pwsh
         run: |
-          cd dinbilverkstad
-          build_windows_exe.bat
+          Remove-Item -Recurse -Force venv_ci -ErrorAction SilentlyContinue
+          python -m venv venv_ci
+          .\venv_ci\Scripts\python.exe -m pip install --upgrade pip setuptools wheel
+          .\venv_ci\Scripts\python.exe -m pip install -r requirements.txt
+          .\venv_ci\Scripts\python.exe -m pip install pyinstaller
+          .\venv_ci\Scripts\python.exe -m pyinstaller --noconfirm --clean --onefile --name DinBilverkstad --add-data "templates;templates" --add-data "static;static" app.py
+          New-Item -ItemType Directory -Force -Path .\release\DinBilverkstad\data | Out-Null
+          Copy-Item -Force .\dist\DinBilverkstad.exe .\release\DinBilverkstad\DinBilverkstad.exe
+          if (Test-Path .\install_windows.bat) { Copy-Item -Force .\install_windows.bat .\release\DinBilverkstad\Install_DinBilverkstad.bat }
 
       - name: Setup Node.js (LTS)
         uses: actions/setup-node@v4
